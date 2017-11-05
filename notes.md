@@ -1,4 +1,11 @@
-Perf
+# Notes
+
+Look through the change history to see what was being tested for each item noted below. The biggest perf-killer so far is logging. Pushing logging into a core.async channel seems like a reasonable solution.
+
+
+## Running the tests
+
+Run in production mode:
 
 ```
 lein do clean, ring uberjar
@@ -134,7 +141,7 @@ Middleware cost us 600 requests/sec
 
 ## Logging w/ println
 
-Loggin w/ println cost us 20,908, about 1200 better than timbre
+Logging w/ println cost us 20,908, about 1200 better than timbre
 
   Running 20s test @ http://localhost:3000/api/hello
     100 threads and 100 connections
