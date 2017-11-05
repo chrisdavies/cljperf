@@ -7,21 +7,22 @@
             [ring.util.response :as rsp]
             [cljs-router.core :as router]
             [camel-snake-kebab.core :as camel]
+            [clojure.core.async :refer [go-loop <! >!! sliding-buffer chan]]
             [clojure.walk :as w]
             [timbre-ns-pattern-level]))
+
+(def sliding-chan (chan (sliding-buffer 100)))
+
+(go-loop []
+  (println (<! sliding-chan))
+  (recur))
+
 
 ; Disable super spammy logging from hikari (connection pool)
 (log/merge-config!
   {:level :info
    :middleware [(timbre-ns-pattern-level/middleware {"com.zaxxer.hikari.*" :error
                                                      :all :info})]})
-
-; (defn wrap-body-json [handler]
-;   (fn [request]
-;     (let [body-str (req/body-string request)
-;           body-json (when (seq body-str)
-;                           (ches/parse-string body-str true))]
-;       (handler (assoc request :body body-json)))))
 
 (defn camel-case [k]
   (-> k
@@ -64,7 +65,7 @@
   (f (assoc req :params params)))
 
 (defn app [req]
-  (log/info req)
+  (>!! sliding-chan req)
   (let [uri (str (-> req :request-method name) " " (:uri req) "?" (:query-string req))]
     (-> uri
         (->> (router/route routes))

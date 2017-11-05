@@ -132,6 +132,33 @@ Middleware cost us 600 requests/sec
   Transfer/sec:      1.37MB
 
 
-## Tweak timbre to buffer more
-
 ## Logging w/ println
+
+Loggin w/ println cost us 20,908, about 1200 better than timbre
+
+  Running 20s test @ http://localhost:3000/api/hello
+    100 threads and 100 connections
+    Thread Stats   Avg      Stdev     Max   +/- Stdev
+      Latency     9.24ms    4.40ms  70.34ms   69.98%
+      Req/Sec   110.19     19.26   277.00     60.02%
+    220301 requests in 20.11s, 32.98MB read
+  Requests/sec:  10956.87
+  Transfer/sec:      1.64MB
+
+
+## Logging w/ println + core.async
+
+Significantly faster than any previous logging option, cost us 5,301 requests/sec
+
+  ~/dev/lang/clojure/cljperf (master)*$ wrk -c 100 -d 20 -t 100 http://localhost:3000/api/hello
+  Running 20s test @ http://localhost:3000/api/hello
+    100 threads and 100 connections
+    Thread Stats   Avg      Stdev     Max   +/- Stdev
+      Latency     6.46ms   13.03ms 170.46ms   94.72%
+      Req/Sec   267.32    100.74     0.92k    74.97%
+    533062 requests in 20.07s, 79.81MB read
+  Requests/sec:  26563.27
+  Transfer/sec:      3.98MB
+
+
+## Logging w/ timbre + core.async

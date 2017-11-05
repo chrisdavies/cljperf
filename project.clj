@@ -17,6 +17,7 @@
                  [hikari-cp "1.8.1"]
                  [camel-snake-kebab "0.4.0"]
                  [com.taoensso/timbre "4.10.0"]
+                 [org.clojure/core.async "0.3.443"]
                  [timbre-ns-pattern-level "0.1.2"]
                  [com.fzakaria/slf4j-timbre "0.3.7"]]
   :plugins [[lein-ring "0.12.1"]]
