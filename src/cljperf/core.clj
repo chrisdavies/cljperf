@@ -14,7 +14,7 @@
 (def sliding-chan (chan (sliding-buffer 100)))
 
 (go-loop []
-  (println (<! sliding-chan))
+  (log/info (<! sliding-chan))
   (recur))
 
 ; Disable super spammy logging from hikari (connection pool)
@@ -27,7 +27,7 @@
     {:fn
      (fn [data]
        (let [{:keys [output_]} data]
-         (>!! sliding-chan data)))}}})
+         (println data)))}}})
 
 (defn camel-case [k]
   (-> k
@@ -70,7 +70,7 @@
   (f (assoc req :params params)))
 
 (defn app [req]
-  (log/info req)
+  (>!! sliding-chan req)
   (let [uri (str (-> req :request-method name) " " (:uri req) "?" (:query-string req))]
     (-> uri
         (->> (router/route routes))

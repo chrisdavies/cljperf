@@ -175,7 +175,7 @@ Still pretty slow...
   Requests/sec:   9188.79
   Transfer/sec:      1.38MB
 
-## Logging w/ timbre + core.async
+## Logging w/ timbre -> core.async -> println
 
 Cost us 10,532 requests/sec vs not logging, about 1/2 as fast as async println
 
@@ -188,3 +188,17 @@ Cost us 10,532 requests/sec vs not logging, about 1/2 as fast as async println
     428739 requests in 20.10s, 64.19MB read
   Requests/sec:  21332.65
   Transfer/sec:      3.19MB
+
+## Logging w/ core.async -> timbre -> println
+
+Cost us 754 requests/sec vs not logging... not bad!
+
+  ~/dev/lang/clojure/cljperf (master)*$ wrk -c 100 -d 20 -t 100 http://localhost:3000/api/hello
+  Running 20s test @ http://localhost:3000/api/hello
+    100 threads and 100 connections
+    Thread Stats   Avg      Stdev     Max   +/- Stdev
+      Latency     5.49ms   11.69ms 233.77ms   94.92%
+      Req/Sec   313.01    103.70     1.38k    77.31%
+    623958 requests in 20.06s, 93.42MB read
+  Requests/sec:  31110.26
+  Transfer/sec:      4.66MB
