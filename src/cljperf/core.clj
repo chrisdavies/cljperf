@@ -22,7 +22,19 @@
 (log/merge-config!
   {:level :info
    :middleware [(timbre-ns-pattern-level/middleware {"com.zaxxer.hikari.*" :error
-                                                     :all :info})]})
+                                                     :all :info})]
+   :appenders
+   {:println (taoensso.timbre.appenders.core/println-appender {:rate-limit [[1 250] [10 5000]]})}})
+  ;  {:enabled?   true
+  ;   :async?     false
+  ;   :min-level  nil
+  ;   :rate-limit [[1 250] [10 5000]] ; 1/250ms, 10/5s
+  ;   :output-fn  :inherit
+  ;   :fn ; Appender's (fn [data]) -> side effects
+  ;   (fn [data]
+  ;     (let [{:keys [output_]} data]
+  ;       (>!! sliding-chan data)))}})
+
 
 (defn camel-case [k]
   (-> k
@@ -65,7 +77,7 @@
   (f (assoc req :params params)))
 
 (defn app [req]
-  (>!! sliding-chan req)
+  (log/info req)
   (let [uri (str (-> req :request-method name) " " (:uri req) "?" (:query-string req))]
     (-> uri
         (->> (router/route routes))

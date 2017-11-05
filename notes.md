@@ -161,4 +161,20 @@ Significantly faster than any previous logging option, cost us 5,301 requests/se
   Transfer/sec:      3.98MB
 
 
+## Logging w/ timbre + rate-limiting
+
+Still pretty slow...
+
+  ~/dev/lang/clojure/cljperf (master)*$ wrk -c 100 -d 20 -t 100 http://localhost:3000/api/hello
+  Running 20s test @ http://localhost:3000/api/hello
+    100 threads and 100 connections
+    Thread Stats   Avg      Stdev     Max   +/- Stdev
+      Latency    11.02ms    5.90ms  68.78ms   74.96%
+      Req/Sec    92.39     17.87   404.00     75.32%
+    184714 requests in 20.10s, 27.66MB read
+  Requests/sec:   9188.79
+  Transfer/sec:      1.38MB
+
 ## Logging w/ timbre + core.async
+
+
