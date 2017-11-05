@@ -8,6 +8,7 @@
                  [org.postgresql/postgresql "42.1.4.jre7"]
                  [com.layerware/hugsql "0.4.8"]
                  [ring "1.6.3"]
+                 [bidi "2.1.2"]
                  [cheshire "5.8.0"]
                  [cljs-router "0.1.1"]
                  [com.rpl/specter "1.0.4"]

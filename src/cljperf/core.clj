@@ -5,6 +5,7 @@
             [ring.util.request :as req]
             [taoensso.timbre :as log]
             [ring.util.response :as rsp]
+            [cljs-router.core :as router]
             [timbre-ns-pattern-level]))
 
 ; Disable super spammy logging from hikari (connection pool)
@@ -20,9 +21,34 @@
 ;                           (ches/parse-string body-str true))]
 ;       (handler (assoc request :body body-json)))))
 
+(defn hello [req]
+  (rsp/response "Hello, World!"))
+
+(defn goodbye [req]
+  (rsp/response "Goodbye, World!"))
+
+(defn hello-n [{{:keys [name]} :params}]
+  (rsp/response (str "Hello, " name "!")))
+
+(defn not-found [req]
+  (-> "404 Not Found"
+      rsp/response
+      (rsp/status 404)))
+
+(def routes (router/make-routes
+             {"get /api/query/:name"               hello-n
+              "get /api/goodbye"                   goodbye
+              "get /api/hello"                     hello
+              "*url"                               not-found}))
+
+(defn run-handler [[f params] req]
+  (f (assoc req :params params)))
 
 (defn app [req]
-  (rsp/response "Hello, World!"))
+  (let [uri (str (-> req :request-method name) " " (:uri req) "?" (:query-string req))]
+    (-> uri
+        (->> (router/route routes))
+        (run-handler req))))
 
 (def app-reload
   (wrap-reload #'app))
