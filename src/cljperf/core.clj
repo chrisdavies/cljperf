@@ -17,24 +17,17 @@
   (println (<! sliding-chan))
   (recur))
 
-
 ; Disable super spammy logging from hikari (connection pool)
 (log/merge-config!
   {:level :info
    :middleware [(timbre-ns-pattern-level/middleware {"com.zaxxer.hikari.*" :error
                                                      :all :info})]
    :appenders
-   {:println (taoensso.timbre.appenders.core/println-appender {:rate-limit [[1 250] [10 5000]]})}})
-  ;  {:enabled?   true
-  ;   :async?     false
-  ;   :min-level  nil
-  ;   :rate-limit [[1 250] [10 5000]] ; 1/250ms, 10/5s
-  ;   :output-fn  :inherit
-  ;   :fn ; Appender's (fn [data]) -> side effects
-  ;   (fn [data]
-  ;     (let [{:keys [output_]} data]
-  ;       (>!! sliding-chan data)))}})
-
+   {:println
+    {:fn
+     (fn [data]
+       (let [{:keys [output_]} data]
+         (>!! sliding-chan data)))}}})
 
 (defn camel-case [k]
   (-> k
