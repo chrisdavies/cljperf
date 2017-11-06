@@ -11,6 +11,7 @@
                  [bidi "2.1.2"]
                  [cheshire "5.8.0"]
                  [cljs-router "0.1.1"]
+                 [metosin/jsonista "0.1.0-SNAPSHOT"]
                  [com.rpl/specter "1.0.4"]
                  [migratus "1.0.0"]
                  [environ "1.1.0"]

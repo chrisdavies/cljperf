@@ -1,7 +1,7 @@
 (ns cljperf.core
   (:require [ring.adapter.jetty :as jetty]
             [ring.middleware.reload :refer [wrap-reload]]
-            [cheshire.core :as ches]
+            [jsonista.core :as jsonista]
             [ring.util.request :as req]
             [taoensso.timbre :as log]
             [ring.util.response :as rsp]
@@ -42,12 +42,16 @@
 
 (defn json [payload]
   (-> payload
-      (ches/generate-string {:key-fn camel-case})
+      jsonista/to-json
       rsp/response
       (rsp/content-type "application/json")))
 
 (defn hello [req]
-  (json {:hello "World!"}))
+  (json {:msg-val "World!"
+         :age 32
+         :num-likes ["one" "two" "three"]
+         :address {:street "Here we go"
+                   :zip 3243}}))
 
 (defn goodbye [req]
   (rsp/response "Goodbye, World!"))
