@@ -49,6 +49,20 @@ Routing cost 2,218 requests/sec
   Requests/sec:  34609.85
   Transfer/sec:      3.96MB
 
+## Routing (reitit)
+
+Routing w/ reitit cost 1,139 requests/sec. This is the winning router
+by a long shot (perf + features).
+
+  ~/dev/lang/clojure/cljperf (master)*$ wrk -c 100 -d 20 -t 100 http://localhost:3000/api/hello
+  Running 20s test @ http://localhost:3000/api/hello
+    100 threads and 100 connections
+    Thread Stats   Avg      Stdev     Max   +/- Stdev
+      Latency     4.84ms   11.62ms 127.60ms   96.03%
+      Req/Sec   358.82    104.35     0.95k    77.23%
+    715621 requests in 20.05s, 81.90MB read
+  Requests/sec:  35688.62
+  Transfer/sec:      4.08MB
 
 ## Routing (bidi)
 

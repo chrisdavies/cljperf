@@ -10,6 +10,7 @@
                  [ring "1.6.3"]
                  [bidi "2.1.2"]
                  [cheshire "5.8.0"]
+                 [metosin/reitit "0.1.0-SNAPSHOT"]
                  [cljs-router "0.1.1"]
                  [metosin/jsonista "0.1.0-SNAPSHOT"]
                  [com.rpl/specter "1.0.4"]

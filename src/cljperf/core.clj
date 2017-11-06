@@ -4,7 +4,7 @@
             [ring.util.request :as req]
             [taoensso.timbre :as log]
             [ring.util.response :as rsp]
-            [cljs-router.core :as router]
+            [reitit.ring :as ring]
             [cheshire.core :as ches]
             [clojure.core.async :refer [go-loop <! >!! sliding-buffer chan]]
             [clojure.walk :as w]
@@ -41,9 +41,9 @@
 
 (defn json [payload]
   (-> payload
-      pr-str
+      (ches/generate-string {:key-fn camel-case})
       rsp/response
-      (rsp/content-type "application/edn")))
+      (rsp/content-type "application/json")))
 
 (defn hello [req]
   (json {:msg-val "World!"
@@ -63,24 +63,19 @@
       rsp/response
       (rsp/status 404)))
 
-(def routes (router/make-routes
-             {"get /api/query/:name"               hello-n
-              "get /api/goodbye"                   goodbye
-              "get /api/hello"                     hello
-              "*url"                               not-found}))
-
-(defn run-handler [[f params] req]
-  (f (assoc req :params params)))
-
-(defn app [req]
+(defn logger-middleware [req]
   (>!! sliding-chan req)
-  (let [uri (str (-> req :request-method name) " " (:uri req) "?" (:query-string req))]
-    (-> uri
-        (->> (router/route routes))
-        (run-handler req))))
+  req)
 
-(def app-reload
-  (wrap-reload #'app))
+(def router
+  (ring/ring-handler
+    (ring/router
+      [["/api"
+        ["/query/:name" hello-n]
+        ["/goodbye"     goodbye]
+        ["/hello"       hello]]
+       ["/*path"        not-found]]
+      {:conflicts (comp println reitit.core/conflicts-str)})))
 
-(defn run []
-  (jetty/run-jetty #'app-reload {:port 8080 :join? false}))
+(def app
+  (comp router logger-middleware))
