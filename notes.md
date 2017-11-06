@@ -170,6 +170,45 @@ Slight improvement (around 300 req/sec better than w/out camelCase)
   Requests/sec:  31629.69
   Transfer/sec:      7.48MB
 
+### Cheshire w/ camelCase
+
+  ~/dev/lang/clojure/cljperf (master)*$ wrk -c 100 -d 20 -t 100 http://localhost:3000/api/hello
+  Running 20s test @ http://localhost:3000/api/hello
+    100 threads and 100 connections
+    Thread Stats   Avg      Stdev     Max   +/- Stdev
+      Latency     5.71ms   12.11ms 208.58ms   95.42%
+      Req/Sec   294.20    107.03     1.11k    74.25%
+    586485 requests in 20.07s, 137.59MB read
+  Requests/sec:  29224.06
+  Transfer/sec:      6.86MB
+
+### Cheshire w/out camelCase
+
+  ~/dev/lang/clojure/cljperf (master)*$ wrk -c 100 -d 20 -t 100 http://localhost:3000/api/hello
+  Running 20s test @ http://localhost:3000/api/hello
+    100 threads and 100 connections
+    Thread Stats   Avg      Stdev     Max   +/- Stdev
+      Latency     5.43ms   11.48ms 132.25ms   95.48%
+      Req/Sec   302.62     99.14     1.30k    75.15%
+    602793 requests in 20.05s, 142.57MB read
+  Requests/sec:  30059.72
+  Transfer/sec:      7.11MB
+
+### Edn w/ pr-str
+
+Surprisingly, edn is about 1,598 ops/sec slower than Cheshire + camelCase
+
+  ~/dev/lang/clojure/cljperf (master)*$ wrk -c 100 -d 20 -t 100 http://localhost:3000/api/hello
+  Running 20s test @ http://localhost:3000/api/hello
+    100 threads and 100 connections
+    Thread Stats   Avg      Stdev     Max   +/- Stdev
+      Latency     5.69ms   11.11ms 171.76ms   95.16%
+      Req/Sec   278.19     96.16     0.85k    74.11%
+    554230 requests in 20.06s, 129.50MB read
+  Requests/sec:  27626.06
+  Transfer/sec:      6.45MB
+
+
 ## Logging each request w/ taoensso.timbre
 
 Logging requests cost us 22,113 requests/sec!!! That's almost a 75% reduction.

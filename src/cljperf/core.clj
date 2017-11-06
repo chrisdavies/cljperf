@@ -1,12 +1,11 @@
 (ns cljperf.core
   (:require [ring.adapter.jetty :as jetty]
             [ring.middleware.reload :refer [wrap-reload]]
-            [jsonista.core :as jsonista]
             [ring.util.request :as req]
             [taoensso.timbre :as log]
             [ring.util.response :as rsp]
             [cljs-router.core :as router]
-            [camel-snake-kebab.core :as camel]
+            [cheshire.core :as ches]
             [clojure.core.async :refer [go-loop <! >!! sliding-buffer chan]]
             [clojure.walk :as w]
             [timbre-ns-pattern-level]))
@@ -42,9 +41,9 @@
 
 (defn json [payload]
   (-> payload
-      jsonista/to-json
+      pr-str
       rsp/response
-      (rsp/content-type "application/json")))
+      (rsp/content-type "application/edn")))
 
 (defn hello [req]
   (json {:msg-val "World!"
